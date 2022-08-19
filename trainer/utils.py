@@ -30,19 +30,17 @@ class Resize():
         return tensor#1, 64, 128, 128
 class ToTensor():
     def __call__(self, tensor):
-        tensor = np.expand_dims(tensor, 0)
+        # tensor = np.expand_dims(tensor, 0) # comment out if using 3 channels
         return torch.from_numpy(tensor)
 
 def tensor2image(tensor):
     image = (127.5*(tensor.cpu().float().numpy()))+127.5
     image1 = image[0]
-    for i in range(1,tensor.shape[0]):
-        image1 = np.hstack((image1,image[i]))
-    
-    if image.shape[0] == 1:
-        image = np.tile(image, (3, 1, 1))
-    #print ('image1.shape:',image1.shape)
-    return image1.astype(np.uint8)
+    # for i in range(1,tensor.shape[0]):
+    #     image1 = np.hstack((image1,image[i]))
+    # if image.shape[0] == 1:
+    #     image = np.tile(image, (3, 1, 1))
+    return image1[:1,:,:].astype(np.uint8)
 
 
 class Logger():
@@ -81,15 +79,32 @@ class Logger():
         sys.stdout.write('ETA: %s' % (datetime.timedelta(seconds=batches_left * self.mean_period / batches_done)))
 
         # Draw images
-        for image_name, tensor in images.items():
-            if image_name not in self.image_windows:
-                self.image_windows[image_name] = self.viz.image(tensor2image(tensor.data), opts={'title': image_name})
-            else:
-                self.viz.image(tensor2image(tensor.data), win=self.image_windows[image_name],
-                               opts={'title': image_name})
-
+        # for image_name, tensor in images.items():
+        #     if image_name not in self.image_windows:
+        #         self.image_windows[image_name] = self.viz.image(tensor2image(tensor.data), opts={'title': image_name})
+        #     else:
+        #         self.viz.image(tensor2image(tensor.data), win=self.image_windows[image_name],
+        #                     opts={'title': image_name})
+        
+        # for loss_name, loss in self.losses.items():
+        #     if loss_name not in self.loss_windows:
+        #         self.loss_windows[loss_name] = self.viz.line(X=np.array([self.batch]),
+        #                                                         Y=np.array([loss / self.batch]),
+        #                                                         opts={'xlabel': 'iter', 'ylabel': loss_name,
+        #                                                             'title': loss_name})
+        #     else:
+        #         self.viz.line(X=np.array([self.batch]), Y=np.array([loss / self.batch]),
+        #                         win=self.loss_windows[loss_name], update='append')
         # End of epoch
         if (self.batch % self.batches_epoch) == 0:
+            # Draw images
+            for image_name, tensor in images.items():
+                if image_name not in self.image_windows:
+                    self.image_windows[image_name] = self.viz.image(tensor2image(tensor.data), opts={'title': image_name})
+                else:
+                    self.viz.image(tensor2image(tensor.data), win=self.image_windows[image_name],
+                                opts={'title': image_name})
+
             # Plot losses
             for loss_name, loss in self.losses.items():
                 if loss_name not in self.loss_windows:

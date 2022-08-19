@@ -1,0 +1,33 @@
+#####
+name: RegGan
+
+size: 256
+input_nc: 3         
+output_nc: 7 
+
+save_root: "/path/to/dir/"
+image_save: "/path/to/dir/"
+source_root: "/path/to/dir/*/*"
+target_root: "/path/to/dir/*/*"
+
+epoch: 0        # starting epoch
+n_epochs: 20   
+batchSize: 1 
+
+bidirect: False 
+regist: True 
+port: 6019 
+
+# lamda weight
+Adv_lamda: 1
+Smooth_lamda: 10
+Corr_lamda: 20 
+# Cyc_lamda: 10
+
+  
+
+lr: 0.0001                   # initial learning rate
+                 
+cuda: True               
+n_cpu: 1
+
